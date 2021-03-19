@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-import random as random
 
 rcp26 = pd.read_csv("rcp26.csv")
 rcp45 = pd.read_csv('rcp45.csv')
@@ -27,7 +26,7 @@ def ocean(T):
     return integral
 
 def ice_albedo(T, t):
-    Ts = (2/bolz*(1-alpha(T))*(np.sin(t*0.01)+1)*I0)**(1/4)-273.1
+    Ts = (2/bolz*(1-alpha(T))*(np.sin(t*0.001)+1)*I0)**(1/4)-273.1
     return Ts
 
 # alpha operates on global temperature => +T_init
@@ -67,16 +66,16 @@ def carbon_rcp(E):
     return co2
 
 
-c_glac = glacial_carbon(C0)
+#c_glac = glacial_carbon(C0)
 c_rcp = carbon_rcp(C0)
-'''
+
 no_ocean = myles([T0], c_rcp, 0, 0)
 ocean_only = myles([T0], c_rcp, h, 0)
 ocean_ice = myles([T0], c_rcp, h, 1)
 ocean_ice_co = myles([T0], c_rcp, h, 1)
 ocean_ice_corcp = myles([T0], c_rcp, h, 1)
-'''
-glacial = myles([T0], c_glac, h, 1)
+
+#glacial = myles([T0], c_glac, h, 1)
 
 
 #plt.plot(rcp26.YEARS[:700], no_ocean[:700], color="blue")
@@ -84,7 +83,7 @@ glacial = myles([T0], c_glac, h, 1)
 #plt.plot(rcp26.YEARS[:700], ocean_ice[:700], color="green")#
 #plt.plot(rcp26.YEARS[:700], ocean_ice_co[:700], color="red")
 #plt.plot(rcp26.YEARS[:700], ocean_ice_corcp[:700], color="red")
-plt.plot(glacial)
+#plt.plot(glacial)
 #plt.plot(c, color="orange")
 #plt.plot(c_rcp, color="blue")
 # plt.plot(a, color="green")
