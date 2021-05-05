@@ -23,6 +23,8 @@ tauc = 25 # yrs
 taudo = 200 # yrs
 
 hT = 1/np.sqrt(100) # 1/sqrt(yrs)
+hE = 1/1000 #h emissions, temperature feedback
+
 
 eps_aa = 0.1
 eps_ml = 0.5
@@ -33,7 +35,7 @@ dt = 1 # yr
 
 # Function definitions
 def Tsolar(alpha,t):
-    val = (1-alpha)*(np.sin(t*0.01)+1)*I0/(4*sigma*bb_efficiency)
+    val = (1-alpha)*((0.3*np.sin(t*0.01))+1.2)*I0/(4*sigma*bb_efficiency)
     val = pow(val,0.25)
     return val
 
@@ -66,16 +68,21 @@ Emissions = np.zeros([1500, 1])
 
 #use rcp2.6 emissions for sanity check
 # =============================================================================
-# rcp26 = pd.read_csv('C:\\Users\\stecheme\\Documents\\RCP\\rcp26.csv')  
-# C_rcp = rcp26['CO2']
-# Emissions = np.diff(C_rcp)
+#rcp26 = pd.read_csv('C:\\Users\\stecheme\\Documents\\RCP\\rcp26.csv')  
+#C_rcp = rcp26['CO2']
+#Emissions = np.diff(C_rcp)
 # =============================================================================
+def emissions(Emissions_in,T):
+    E_new = Emissions_in+hE*(T-Tabs0)
+    return(E_new)
+    
 
-
-print(Tsolar(0.0))
-print(Tco2(140))
-print(len(Emissions))
-
+# =============================================================================
+# print(Tsolar(0.0))
+# print(Tco2(140))
+# print(len(Emissions))
+# 
+# =============================================================================
 # variables
 Ts = [] # surface temperature set by solar insulation
 Tc = [] # surface temperature set by 
@@ -100,7 +107,7 @@ Cdo_old = 0.0  #C2
 C_old   = Caa_old + Cml_old + Cdo_old
 
 for t in range(1,len(Emissions)):
-    E = Emissions[t]
+    E = emissions(Emissions[t],T_old)
     
     Ts_new = Ts_old + dt * (Tsolar(alpha_old,t) - Ts_old/taus)
     Tc_new = Tc_old + dt * (Tco2(C_old)/tauc - Tc_old/tauc-hT*Ocean_uptake(Tc))
@@ -137,7 +144,7 @@ plt.figure()
 plt.plot(C)
 
 plt.figure()
-plt.plot(Tc)
+plt.plot(Ts)
 
 plt.figure()
 plt.plot(TCelcius)
